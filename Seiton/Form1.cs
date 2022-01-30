@@ -43,20 +43,20 @@ namespace Seiton
         private void Form1_Load(object sender, EventArgs e)
         {
             // Llenado de combobox con nacionalidades
-            NpgsqlCommand cmd_nac = new NpgsqlCommand();
-            cmd_nac.CommandText = "select GENTILICIO_NAC from entrada_salida.nacionalidad ORDER BY GENTILICIO_NAC ASC;";
-            cmd_nac.Connection = Form5.cn;
-            NpgsqlDataReader nac = cmd_nac.ExecuteReader();
+            NpgsqlCommand cmd = new NpgsqlCommand();
+            cmd.CommandText = "select GENTILICIO_NAC from entrada_salida.nacionalidad ORDER BY GENTILICIO_NAC ASC;";
+            cmd.Connection = Form5.cn;
+            NpgsqlDataReader nac = cmd.ExecuteReader();
             while (nac.Read()) {
                 om_nac_comboBox.Items.Add(nac[0]); 
             } 
             nac.Close();
 
             // Llenado de combobox de destinos a trasladar
-            NpgsqlCommand cmd_tras = new NpgsqlCommand();
-            cmd_tras.CommandText = "select nombre from entrada_salida.destino order by nombre ASC;";
-            cmd_tras.Connection = Form5.cn;
-            NpgsqlDataReader tras = cmd_tras.ExecuteReader();
+            //NpgsqlCommand cmd_tras = new NpgsqlCommand();
+            cmd.CommandText = "select nombre from entrada_salida.destino order by nombre ASC;";
+            //cmd_tras.Connection = Form5.cn;
+            NpgsqlDataReader tras = cmd.ExecuteReader();
             while (tras.Read())
             {
                 om_traslado_comboBox.Items.Add(tras[0]);
@@ -68,10 +68,10 @@ namespace Seiton
             est_solicitudComboBox.Items.Add("NEGADA");
 
             // Llenado de combobox de nombres de conductores
-            NpgsqlCommand cmd_conduct = new NpgsqlCommand();
-            cmd_conduct.CommandText = "select nombre from entrada_salida.conductor order by nombre asc;";
-            cmd_conduct.Connection = Form5.cn;
-            NpgsqlDataReader conduct = cmd_conduct.ExecuteReader();
+            //NpgsqlCommand cmd_conduct = new NpgsqlCommand();
+            cmd.CommandText = "select nombre from entrada_salida.conductor order by nombre asc;";
+            //cmd_conduct.Connection = Form5.cn;
+            NpgsqlDataReader conduct = cmd.ExecuteReader();
             while (conduct.Read())
             {
                 est_conductComboBox.Items.Add(conduct[0]);
@@ -79,10 +79,10 @@ namespace Seiton
             conduct.Close();
 
             // Llenado de combobox de número de vehiculos
-            NpgsqlCommand cmd_numVehi = new NpgsqlCommand();
-            cmd_numVehi.CommandText = "select num from entrada_salida.vehiculo;";
-            cmd_numVehi.Connection = Form5.cn;
-            NpgsqlDataReader numVehi = cmd_numVehi.ExecuteReader();
+            //NpgsqlCommand cmd_numVehi = new NpgsqlCommand();
+            cmd.CommandText = "select num from entrada_salida.vehiculo;";
+            //cmd_numVehi.Connection = Form5.cn;
+            NpgsqlDataReader numVehi = cmd.ExecuteReader();
             while (numVehi.Read())
             {
                 est_vehiNumComboBox.Items.Add(numVehi[0]);
@@ -362,7 +362,8 @@ namespace Seiton
                             cmd2.Connection = Form5.cn;
                             cmd2.ExecuteNonQuery();
 
-                            MessageBox.Show("Registro Insertado");
+                            MessageBox.Show("Registro Insertado.",
+                                "Registro insertado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             this.Close();
                         }
                         catch (Exception ex)
@@ -415,7 +416,8 @@ namespace Seiton
                                 cmd2.Connection = Form5.cn;
                                 cmd2.ExecuteNonQuery();
 
-                                MessageBox.Show("Registro Insertado");
+                                MessageBox.Show("Registro Insertado.",
+                                "Registro insertado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 this.Close();
                             }
                             catch (Exception ex)

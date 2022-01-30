@@ -261,6 +261,7 @@
             // 
             this.aut_kmEntrada.Enabled = false;
             this.aut_kmEntrada.Location = new System.Drawing.Point(568, 126);
+            this.aut_kmEntrada.MaxLength = 9;
             this.aut_kmEntrada.Name = "aut_kmEntrada";
             this.aut_kmEntrada.Size = new System.Drawing.Size(200, 22);
             this.aut_kmEntrada.TabIndex = 16;
@@ -280,6 +281,7 @@
             // 
             this.aut_kmSalida.Enabled = false;
             this.aut_kmSalida.Location = new System.Drawing.Point(173, 126);
+            this.aut_kmSalida.MaxLength = 9;
             this.aut_kmSalida.Name = "aut_kmSalida";
             this.aut_kmSalida.Size = new System.Drawing.Size(203, 22);
             this.aut_kmSalida.TabIndex = 13;
@@ -370,6 +372,7 @@
             // aut_num_textBox
             // 
             this.aut_num_textBox.Location = new System.Drawing.Point(69, 41);
+            this.aut_num_textBox.MaxLength = 9;
             this.aut_num_textBox.Name = "aut_num_textBox";
             this.aut_num_textBox.Size = new System.Drawing.Size(261, 22);
             this.aut_num_textBox.TabIndex = 1;

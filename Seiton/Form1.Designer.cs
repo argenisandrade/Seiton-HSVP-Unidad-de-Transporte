@@ -583,6 +583,7 @@
             // 
             this.om_num_tbox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.om_num_tbox.Location = new System.Drawing.Point(275, 18);
+            this.om_num_tbox.MaxLength = 9;
             this.om_num_tbox.Name = "om_num_tbox";
             this.om_num_tbox.Size = new System.Drawing.Size(197, 22);
             this.om_num_tbox.TabIndex = 1;

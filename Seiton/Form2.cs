@@ -224,7 +224,8 @@ namespace Seiton
                         cmd1.Connection = Form5.cn;
                         cmd1.ExecuteNonQuery();
 
-                        MessageBox.Show("Registro Insertado");
+                        MessageBox.Show("Registro Insertado.",
+                                "Registro insertado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.Close();
                     }
                     catch (Exception ex)

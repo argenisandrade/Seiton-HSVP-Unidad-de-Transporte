@@ -79,8 +79,8 @@ namespace Seiton
 
             // query para asegurar que no haya una autorizacion ya insertada con ese codigo 
             String str;
-            str = "SELECT num FROM entrada_salida.info_solicitud I ";
-            str = str + " WHERE estado = 'APROBADA'";
+            str = "SELECT num FROM entrada_salida.info_solicitud I natural join ";
+            str = str + "entrada_salida.autorizacion A WHERE I.estado = 'APROBADA'";
 
             NpgsqlCommand cmd_codOM = new NpgsqlCommand();
             cmd_codOM.CommandText = str;
@@ -203,9 +203,11 @@ namespace Seiton
                 str1 = "select O.num, O.fecha, O.solicitante, C.nombre as conductor, V.num ";
                 str1 = str1 + "from entrada_salida.orden_mov O natural join ";
                 str1 = str1 + "entrada_salida.info_solicitud I inner join ";
+                str1 = str1 + "entrada_salida.autorizacion A on I.num = A.num inner join ";
                 str1 = str1 + "entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join ";
                 str1 = str1 + "entrada_salida.conductor C on I.conductor = C.cedula ";
                 str1 = str1 + "where O.num = " + writeNumTBox.Text;
+
 
                 NpgsqlCommand cmd = new NpgsqlCommand();
                 cmd.CommandText = str1;
@@ -213,44 +215,70 @@ namespace Seiton
                 NpgsqlDataReader load_info = cmd.ExecuteReader();
 
                 resultsDataGrid.Rows.Clear();
-                while (load_info.Read())
+                //while (load_info.Read())
+                //{
+                //    resultsDataGrid.Rows.Add(load_info[0], load_info[1], load_info[2], load_info[3], load_info[4]);
+                //}
+                //load_info.Close();
+                load_info.Read();
+                try
                 {
                     resultsDataGrid.Rows.Add(load_info[0], load_info[1], load_info[2], load_info[3], load_info[4]);
+                    load_info.Close();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("No hay registros con el número ingresado. Revisar que haya una orden de movilización aprobada con dicho número y que tenga su correspondiente autorización de salida.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    load_info.Close();
                 }
                 load_info.Close();
-
-                
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ingrese al menos un número para generar la búsqueda",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
-            
+            resultsDataGrid.ClearSelection();
+
         }
 
         private void selectVehiCbox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Cargar codigo institucional de vehiculo en textbox cuando se selecciona un número
-            NpgsqlCommand cmd_codVehi = new NpgsqlCommand();
-            cmd_codVehi.CommandText = "select cod_inst from entrada_salida.vehiculo where num = " + selectVehiCbox.Text;
-            cmd_codVehi.Connection = Form5.cn;
-            NpgsqlDataReader codVehi = cmd_codVehi.ExecuteReader();
-            codVehi.Read();
-            codVehiTBox.Text = codVehi[0].ToString();
-            codVehi.Close();
+            try
+            {
+                // Cargar codigo institucional de vehiculo en textbox cuando se selecciona un número
+                NpgsqlCommand cmd_codVehi = new NpgsqlCommand();
+                cmd_codVehi.CommandText = "select cod_inst from entrada_salida.vehiculo where num = " + selectVehiCbox.Text;
+                cmd_codVehi.Connection = Form5.cn;
+                NpgsqlDataReader codVehi = cmd_codVehi.ExecuteReader();
+                codVehi.Read();
+                codVehiTBox.Text = codVehi[0].ToString();
+                codVehi.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void selectConducCBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            NpgsqlCommand cmd_cedCondu = new NpgsqlCommand();
-            cmd_cedCondu.CommandText = "select cedula from entrada_salida.conductor where nombre = " + "'" + selectConducCBox.Text + "';";
-            cmd_cedCondu.Connection = Form5.cn;
-            NpgsqlDataReader cedCondu = cmd_cedCondu.ExecuteReader();
-            cedCondu.Read();
-            cedConductorTBox.Text = cedCondu[0].ToString();
-            cedCondu.Close();
+            try
+            {
+                // Cargar cédula del conductor en textbox cuando se selecciona un nombre
+                NpgsqlCommand cmd_cedCondu = new NpgsqlCommand();
+                cmd_cedCondu.CommandText = "select cedula from entrada_salida.conductor where nombre = " + "'" + selectConducCBox.Text + "';";
+                cmd_cedCondu.Connection = Form5.cn;
+                NpgsqlDataReader cedCondu = cmd_cedCondu.ExecuteReader();
+                cedCondu.Read();
+                cedConductorTBox.Text = cedCondu[0].ToString();
+                cedCondu.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void buscarVehiBtn_Click(object sender, EventArgs e)
@@ -262,6 +290,7 @@ namespace Seiton
                 str1 = "select O.num, O.fecha, O.solicitante, C.nombre as conductor, V.num ";
                 str1 = str1 + "from entrada_salida.orden_mov O natural join ";
                 str1 = str1 + "entrada_salida.info_solicitud I inner join ";
+                str1 = str1 + "entrada_salida.autorizacion A on I.num = A.num inner join ";
                 str1 = str1 + "entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join ";
                 str1 = str1 + "entrada_salida.conductor C on I.conductor = C.cedula ";
                 str1 = str1 + "where I.vehiculo = " + codVehiTBox.Text;
@@ -285,7 +314,7 @@ namespace Seiton
                 MessageBox.Show("Seleccione un vehículo.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
+            resultsDataGrid.ClearSelection();
 
         }
 
@@ -298,6 +327,7 @@ namespace Seiton
                 str1 = "select O.num, O.fecha, O.solicitante, C.nombre as conductor, V.num ";
                 str1 = str1 + "from entrada_salida.orden_mov O natural join ";
                 str1 = str1 + "entrada_salida.info_solicitud I inner join ";
+                str1 = str1 + "entrada_salida.autorizacion A on I.num = A.num inner join ";
                 str1 = str1 + "entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join ";
                 str1 = str1 + "entrada_salida.conductor C on I.conductor = C.cedula ";
                 str1 = str1 + "where O.fecha = " + "'" + pickFecha.Text +"'";
@@ -321,6 +351,7 @@ namespace Seiton
                 MessageBox.Show("Ingrese una fecha válida.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            resultsDataGrid.ClearSelection();
         }
 
         private void buscarConducBtn_Click(object sender, EventArgs e)
@@ -332,6 +363,7 @@ namespace Seiton
                 str1 = "select O.num, O.fecha, O.solicitante, C.nombre as conductor, V.num ";
                 str1 = str1 + "from entrada_salida.orden_mov O natural join ";
                 str1 = str1 + "entrada_salida.info_solicitud I inner join ";
+                str1 = str1 + "entrada_salida.autorizacion A on I.num = A.num inner join ";
                 str1 = str1 + "entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join ";
                 str1 = str1 + "entrada_salida.conductor C on I.conductor = C.cedula ";
                 str1 = str1 + "where I.conductor = " + "'" + cedConductorTBox.Text + "'";
@@ -347,13 +379,201 @@ namespace Seiton
                     resultsDataGrid.Rows.Add(load_info[0], load_info[1], load_info[2], load_info[3], load_info[4]);
                 }
                 load_info.Close();
-
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Seleccione un conductor.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            resultsDataGrid.ClearSelection();
+        }
+
+        private void resultsDataGrid_SelectionChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void generarBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (resultsDataGrid.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("No hay datos disponibles o seleccionados para generar informes.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    foreach (DataGridViewRow row in resultsDataGrid.SelectedRows)
+                    {
+                        string value1 = row.Cells[0].Value.ToString();
+                        string value2 = row.Cells[1].Value.ToString();
+                        //...
+
+                        string str1 = "select * from entrada_salida.orden_mov where num = " + row.Cells[0].Value.ToString();
+                        NpgsqlCommand cmd = new NpgsqlCommand();
+                        cmd.CommandText = str1;
+                        cmd.Connection = Form5.cn;
+                        NpgsqlDataReader check_info = cmd.ExecuteReader();
+                        check_info.Read();
+
+                        if (check_info[11].ToString() == "")
+                        {
+                            check_info.Close();
+                            im_actividades.Items.Clear();
+                            string str2 = "select * from entrada_salida.orden_mov O natural join ";
+                            str2 = str2 + "entrada_salida.info_solicitud I inner join ";
+                            str2 = str2 + "entrada_salida.autorizacion A on I.num = A.num inner join ";
+                            str2 = str2 + "entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join ";
+                            str2 = str2 + "entrada_salida.conductor C on I.conductor = C.cedula ";
+                            str2 = str2 + "where O.num = " + row.Cells[0].Value.ToString() + " and I.estado = 'APROBADA'";
+                            //MessageBox.Show("No destino",
+                            //"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            NpgsqlCommand cmd2 = new NpgsqlCommand();
+                            cmd2.CommandText = str2;
+                            cmd2.Connection = Form5.cn;
+                            NpgsqlDataReader load_info1 = cmd2.ExecuteReader();
+                            while (load_info1.Read())
+                            {
+                                // Datos Hoja de Ruta
+                                hr_lugar.Text = "IBARRA";
+                                hr_num.Text = load_info1[0].ToString();
+                                hr_datePicker.Text = load_info1[1].ToString();
+                                hr_solicitante.Text = load_info1[2].ToString();
+                                hr_unidad.Text = load_info1[3].ToString();
+                                hr_motivo.Text = load_info1[4].ToString();
+                                hr_conductor.Text = load_info1[48].ToString();
+                                hr_vehiculo.Text = load_info1[40].ToString();
+                                hr_numVehi.Text = load_info1[36].ToString();
+                                hr_marcaVehi.Text = load_info1[38].ToString();
+                                hr_placaVehi.Text = load_info1[39].ToString();
+                                hr_observaciones.Text = load_info1[22].ToString();
+                                hr_lugarSalida1.Text = "IBARRA";
+                                hr_fechaSalida1.Text = load_info1[14].ToString();
+                                hr_horaSalida1.Text = load_info1[12].ToString();
+                                hr_kmSalida1.Text = load_info1[27].ToString();
+                                hr_lugarLlegada1.Text = ""; //Ciudad destino
+                                hr_fechaLlegada1.Text = load_info1[17].ToString();
+                                hr_horaLlegada1.Text = load_info1[15].ToString();
+                                //hr_kmLlegada1.Text = "";
+                                hr_lugarSalida2.Text = ""; //Ciudad destino
+                                hr_fechaSalida2.Text = load_info1[14].ToString();
+                                hr_horaSalida2.Text = load_info1[13].ToString();
+                                //hr_kmSalida2.Text = "";
+                                hr_lugarLlegada2.Text = "IBARRA";
+                                hr_fechaLlegada2.Text = load_info1[17].ToString();
+                                hr_horaLlegada2.Text = load_info1[16].ToString();
+                                hr_kmLlegada2.Text = load_info1[28].ToString();
+
+                                // Datos Informe de Movilización
+                                im_conductor.Text = load_info1[48].ToString();
+                                im_numuero.Text = load_info1[0].ToString();
+                                im_solicitante.Text = load_info1[2].ToString();
+                                im_paramedico.Text = load_info1[21].ToString();
+                                im_ciudad.Text = "IBARRA";
+                                im_actividades.Items.Add(load_info1[4].ToString());
+                                im_actividades.Items.Add(load_info1[10].ToString());
+                                im_fechaSalida.Text = load_info1[14].ToString();
+                                im_horaSalida.Text = load_info1[12].ToString();
+                                im_fechaLlegada.Text = load_info1[17].ToString();
+                                im_horaLlegada.Text = load_info1[16].ToString();
+                                im_fechaLlegadaMed.Text = load_info1[17].ToString();
+                                im_horaLlegadaMed.Text = load_info1[15].ToString();
+                                im_fechaSalidaMed.Text = load_info1[14].ToString();
+                                im_horaSalidaMed.Text = load_info1[13].ToString();
+                                im_observaciones.Text = load_info1[22].ToString();
+                                im_kmSalida.Text = load_info1[27].ToString();
+                                im_kmLlegada.Text = load_info1[28].ToString();
+                            }
+
+                            load_info1.Close();
+                            MessageBox.Show("Click en las pestañas correspondientes para ver resultados.",
+                                "Informes generados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        }
+                        else
+                        {
+                            check_info.Close();
+                            im_actividades.Items.Clear();
+                            string str3 = "select * from entrada_salida.orden_mov O natural join ";
+                            str3 = str3 + "entrada_salida.info_solicitud I inner join ";
+                            str3 = str3 + "entrada_salida.autorizacion A on I.num = A.num inner join ";
+                            str3 = str3 + "entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join ";
+                            str3 = str3 + "entrada_salida.conductor C on I.conductor = C.cedula inner join ";
+                            str3 = str3 + "entrada_salida.destino D on O.destino = D.cod_des ";
+                            str3 = str3 + "where O.num = " + row.Cells[0].Value.ToString() + " and I.estado = 'APROBADA'";
+                            //MessageBox.Show("Sí destino",
+                            //"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            NpgsqlCommand cmd3 = new NpgsqlCommand();
+                            cmd3.CommandText = str3;
+                            cmd3.Connection = Form5.cn;
+                            NpgsqlDataReader load_info2 = cmd3.ExecuteReader();
+
+                            while (load_info2.Read())
+                            {
+                                // Datos Hoja de Ruta
+                                hr_lugar.Text = "IBARRA";
+                                hr_num.Text = load_info2[0].ToString();
+                                hr_datePicker.Text = load_info2[1].ToString();
+                                hr_solicitante.Text = load_info2[2].ToString();
+                                hr_unidad.Text = load_info2[3].ToString();
+                                hr_motivo.Text = load_info2[4].ToString();
+                                hr_conductor.Text = load_info2[48].ToString();
+                                hr_vehiculo.Text = load_info2[40].ToString();
+                                hr_numVehi.Text = load_info2[36].ToString();
+                                hr_marcaVehi.Text = load_info2[38].ToString();
+                                hr_placaVehi.Text = load_info2[39].ToString();
+                                hr_observaciones.Text = load_info2[22].ToString();
+                                hr_lugarSalida1.Text = "IBARRA";
+                                hr_fechaSalida1.Text = load_info2[14].ToString();
+                                hr_horaSalida1.Text = load_info2[12].ToString();
+                                hr_kmSalida1.Text = load_info2[27].ToString();
+                                hr_lugarLlegada1.Text = load_info2[56].ToString();
+                                hr_fechaLlegada1.Text = load_info2[17].ToString();
+                                hr_horaLlegada1.Text = load_info2[15].ToString();
+                                //hr_kmLlegada1.Text = "";
+                                hr_lugarSalida2.Text = load_info2[56].ToString();
+                                hr_fechaSalida2.Text = load_info2[14].ToString();
+                                hr_horaSalida2.Text = load_info2[13].ToString();
+                                //hr_kmSalida2.Text = "";
+                                hr_lugarLlegada2.Text = "IBARRA";
+                                hr_fechaLlegada2.Text = load_info2[17].ToString();
+                                hr_horaLlegada2.Text = load_info2[16].ToString();
+                                hr_kmLlegada2.Text = load_info2[28].ToString();
+
+                                // Datos Informe de Movilización
+                                im_conductor.Text = load_info2[48].ToString();
+                                im_numuero.Text = load_info2[0].ToString();
+                                im_solicitante.Text = load_info2[2].ToString();
+                                im_paramedico.Text = load_info2[21].ToString();
+                                im_ciudad.Text = load_info2[56].ToString();
+                                im_actividades.Items.Add(load_info2[4].ToString());
+                                im_actividades.Items.Add(load_info2[10].ToString());
+                                im_fechaSalida.Text = load_info2[14].ToString();
+                                im_horaSalida.Text = load_info2[12].ToString();
+                                im_fechaLlegada.Text = load_info2[17].ToString();
+                                im_horaLlegada.Text = load_info2[16].ToString();
+                                im_fechaLlegadaMed.Text = load_info2[17].ToString();
+                                im_horaLlegadaMed.Text = load_info2[15].ToString();
+                                im_fechaSalidaMed.Text = load_info2[14].ToString();
+                                im_horaSalidaMed.Text = load_info2[13].ToString();
+                                im_observaciones.Text = load_info2[22].ToString();
+                                im_kmSalida.Text = load_info2[27].ToString();
+                                im_kmLlegada.Text = load_info2[28].ToString();
+                            }
+
+                            load_info2.Close();
+                            MessageBox.Show("Click en las pestañas correspondientes para ver resultados.",
+                                "Informes generados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        check_info.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
