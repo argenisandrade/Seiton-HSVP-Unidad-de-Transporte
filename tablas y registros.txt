@@ -1,0 +1,164 @@
+create schema entrada_salida
+
+CREATE TYPE clas_vehi AS
+ENUM('Ambulancia', 'Camioneta');
+CREATE TYPE estad_vehi AS
+ENUM ('B','R','M');
+create table entrada_salida.vehiculo (
+	cod_inst int primary key,
+	clase clas_vehi not null,
+	num serial not null,
+	color varchar not null,
+	marca varchar not null,
+	placa varchar(8) unique not null,
+	tipo varchar not null,
+	modelo varchar not null,
+	chasis varchar unique not null,
+	motor varchar unique not null,
+	year smallint not null,
+	estado estad_vehi not null
+	kilom int
+);
+alter table entrada_salida.vehiculo add constraint chk_placa check (placa similar to '[A-Z]{3}[-][0-9]{4}');
+
+insert into entrada_salida.vehiculo values 
+(6542196, 'Ambulancia', default, 'BLANCO',      'FORD 350', 'IEI-1216',       'II 4X4', 'FORD E 350 SUPERDUTY CARGO VAN ',  '1FDSS3E15CDA23791', '1FDSS3E15CDA23791', 2012, 'B'),
+(6542197, 'Ambulancia', default, 'BLANCO', 'MERCEDES BENZ', 'IEA-1325',   'AMBULANCIA',   '315CDI AC2.1 5P 4X2 TM DIESEL',  'WDB906633DS761517',    '65195531459653', 2013, 'B'),
+(6542198, 'Ambulancia', default, 'BLANCO', 'MERCEDES BENZ', 'IEA-1324',   'AMBULANCIA',   '315CDI AC2.1 5P 4X2 TM DIESEL',  'WDB906633DS762654',    '65195531472488', 2013, 'B'),
+(6542195,  'Camioneta', default,   'ROJO',     'CHEVROLET', 'IEA-0231', 'DOBLE CABINA',             'LUV C/D 4X2 T/m iny',  '8LBTFR30H20115213',     'C22NE25063097', 2002, 'B'),
+(6542193, 'Ambulancia', default, 'BLANCO',           'KIA', 'IEA-0320',   'AMBULANCIA',                          'PREGIO', '8LTOTS73229E002172',          'JT576818', 2008, 'B'),
+(6542192,  'Camioneta', default, 'BLANCO',     'CHEVROLET', 'IEA-0391', 'DOBLE CABINA',           'LUV D-MAX C/D 4X2 T/M',  '8LBETF3DX90000552',     'C24SE31028824', 2009, 'B'),
+(6542194, 'Ambulancia', default, 'BLANCO',         'MAZDA', 'IEA-1326',   'AMBULANCIA',       'BT-50 CS 4X2 STD TD 2,5FL',  'MM7UNY0W490829846',        'WLTA145654', 2009, 'B');
+
+create table entrada_salida.cie10(
+	code varchar primary key,
+	code_0 varchar,
+	code_1 varchar,
+	code_2 varchar,
+	code_3 varchar,
+	code_4 varchar,
+	description varchar,
+	level int,
+	source varchar
+)
+
+CREATE TYPE tip_licen AS
+ENUM ('A', 'A1', 'B', 'C', 'C1', 'D', 'D1', 'E', 'E1', 'F', 'G');
+create table entrada_salida.conductor(
+	cedula varchar(10) primary key,
+	nombre varchar not null,
+	celular varchar(10) unique not null,
+	licencia tip_licen[] not null,
+	fech_cad_lic date[] not null,
+	puntos_lic NUMERIC(3, 1) not null
+);
+alter table entrada_salida.conductor add constraint chk_cedula check (cedula similar to '[[0-9]{10}');
+alter table entrada_salida.conductor add constraint chk_celular check (celular similar to '[[0-9]{10}');
+alter table entrada_salida.conductor add constraint chk_punt check (puntos_lic between 0.0 and 30.0);
+
+insert into entrada_salida.conductor values  
+('1001479995',       'RENE ALBUJA', '0986445770',     '{E}',             '{2023-04-03}', 23.5),
+('1003023429',         'LUIS MORA', '0997012590',     '{E}',             '{2024-09-09}', 25.5),
+('1002642013', 'CHRISTIAN HIDALGO', '0991952600',     '{E}',             '{2022-09-17}', 28.0),
+('1002170809',   'ABDON CERVANTES', '0998535837',     '{E}',             '{2026-01-10}', 24.0),
+('0401333562',     'MANUEL CADENA', '0998998396', '{E, C1}', '{2022-11-13, 2026-01-28}', 30.0),
+('1714312426',   'PATRICIO GAIBOR', '0994538927',    '{C1}',             '{2025-01-21}', 26.0),
+('1002567103', 'FRANCISCO VASQUEZ', '0997267097', '{E, C1}', '{2020-11-09, 2024-03-13}', 30.0),
+('1002168191',     'PEDRO MORALES', '0967279876', '{E, C1}', '{2023-07-16, 2025-01-21}', 30.0),
+('1002365185',        'HUGO ORTIZ', '0986134726',     '{E}',             '{2021-11-29}', 30.0),
+('1002038733',     'JUAN PALACIOS', '0959165526', '{E, C1}', '{2024-10-16, 2025-01-21}', 18.0),
+('1002533055',      'PABLO RIVERA', '0939997261',     '{E}',             '{2021-06-07}', 28.0),
+('1002270187',  'MARCELO VIZCAINO', '0992144632',     '{E}',             '{2022-03-23}', 22.0);
+
+CREATE TYPE tip_sistem AS
+ENUM ('MSP', 'RPIS', 'RPC');
+create table entrada_salida.destino(
+	cod_des serial primary key,
+	nombre varchar not null,
+	sistema tip_sistem not null,
+	ciudad varchar,
+	distancia smallint	
+);
+
+insert into entrada_salida.destino values
+(default,      'HOSPITAL EUGENIO ESPEJO',  'MSP',     'QUITO', 240),
+(default,      'MATERNIDAD ISIDRO AYORA',  'MSP',     'QUITO', 270),
+(default,          'HOSPITAL BACA ORTIZ',  'MSP',     'QUITO', 241),
+(default,         'HOSPITAL DE CALDERON',  'MSP',     'QUITO', 210),
+(default,      'HOSPITAL ENRIQUE GARCES',  'MSP',     'QUITO', 270),
+(default,                         'HCAM', 'RPIS',     'QUITO', 243),
+(default,                         'IESS', 'RPIS',    'IBARRA',   2),
+(default,              'CLINICA HARVARD',  'RPC',     'QUITO', 240),
+(default,                   'MEDIRECREO',  'RPC',     'QUITO', 257),
+(default,              'HOSPITAL INGLES',  'RPC',     'QUITO', 245),
+(default,         'RADIOLOGOS ASOCIADOS',  'RPC',     'QUITO', 240),
+(default,             'CLINICA COLONIAL',  'RPC',     'QUITO', 247),
+(default,                    'INCORAZON',  'RPC',     'QUITO', 247),
+(default,        'CLINICA METROPOLITANA',  'RPC',    'IBARRA',   2),
+(default,               'CLINICA IBARRA',  'RPC',    'IBARRA',   2),
+(default,              'CLINICA MODERNA',  'RPC',    'IBARRA',   2),
+(default,    'HOSPITAL BASICO ATUNTAQUI',  'MSP', 'ATUNTAQUI',  26),
+(default,           'CLINICA COTOCOLLAO',  'RPC',     'QUITO', 227),
+(default, 'HOSPITAL SAN LUIS DE OTAVALO',  'MSP',   'OTAVALO',  51),
+(default,     'CENTRO DE SALUD CARANQUI',  'MSP',    'IBARRA',  10);
+
+create table entrada_salida.orden_mov(
+	num int primary key,
+	fecha date not null,
+	solicitante varchar not null,
+	unidad varchar not null,
+	motivo varchar not null,
+
+	paciente varchar,
+	edad smallint,
+	nacionalidad varchar, --fk
+	cedula varchar(10),
+	cie10 varchar, --fk
+	servicio varchar,
+	destino integer, --fk
+
+	hora_salida_base time,
+	hora_salida_destino time,
+	fecha_salida date,
+	hora_llegada_destino time,
+	hora_llegada_base time,
+	fecha_entrada date
+);
+alter table entrada_salida.orden_mov add constraint fk_nacion  FOREIGN KEY (nacionalidad)  REFERENCES entrada_salida.nacionalidad (ISO_NAC);
+alter table entrada_salida.orden_mov add constraint fk_cie10   FOREIGN KEY (cie10)         REFERENCES entrada_salida.cie10 (code);
+alter table entrada_salida.orden_mov add constraint fk_destino FOREIGN KEY (destino)       REFERENCES entrada_salida.destino (cod_des);
+
+CREATE TYPE est_sol AS
+ENUM ('APROBADA', 'NEGADA');
+create table entrada_salida.info_solicitud (
+	num int primary key, --fk
+	estado est_sol,
+	vehiculo int, --fk
+	conductor varchar, --fk
+	paramed varchar,
+	observ varchar,
+	fecha date not null
+);
+alter table entrada_salida.info_solicitud add constraint fk_vehi_inf FOREIGN KEY (vehiculo)  REFERENCES entrada_salida.vehiculo (cod_inst);
+alter table entrada_salida.info_solicitud add constraint fk_cond_inf FOREIGN KEY (conductor) REFERENCES entrada_salida.conductor (cedula);
+alter table entrada_salida.info_solicitud add constraint fk_num_inf FOREIGN KEY(num) REFERENCES entrada_salida.orden_mov(num);
+
+
+CREATE TYPE motivo_salida AS
+ENUM ('INSTITUC', 'MECANIC');
+create table entrada_salida.autorizacion (
+	num int primary key, --fk
+	fecha date not null,
+	hora_salida time not null,
+	hora_entrada time not null,
+	km_salida int not null,
+	km_entrada int not null,
+	vehiculo int not null, --fk
+	conductor varchar not null, --fk
+	motivo motivo_salida not null,
+	solicitante varchar not null,
+	asunto varchar
+);
+alter table entrada_salida.autorizacion add constraint fk_vehi_aut  FOREIGN KEY (vehiculo)  REFERENCES entrada_salida.vehiculo (cod_inst);
+alter table entrada_salida.autorizacion add constraint fk_cond_aut  FOREIGN KEY (conductor) REFERENCES entrada_salida.conductor (cedula);
+alter table entrada_salida.autorizacion add constraint fk_num_aut   FOREIGN KEY (num)       REFERENCES entrada_salida.orden_mov (num);
