@@ -61,6 +61,9 @@ namespace Seiton
             }
             numVehi.Close();
 
+
+
+
             // Llenado de combobox de nombres de conductores
             NpgsqlCommand cmd_conduct = new NpgsqlCommand();
             cmd_conduct.CommandText = "select nombre from entrada_salida.conductor order by nombre asc;";
@@ -199,7 +202,6 @@ namespace Seiton
             try
             {
                 string str1;
-
                 str1 = "select O.num, O.fecha, O.solicitante, C.nombre as conductor, V.num ";
                 str1 = str1 + "from entrada_salida.orden_mov O natural join ";
                 str1 = str1 + "entrada_salida.info_solicitud I inner join ";
@@ -208,18 +210,12 @@ namespace Seiton
                 str1 = str1 + "entrada_salida.conductor C on I.conductor = C.cedula ";
                 str1 = str1 + "where O.num = " + writeNumTBox.Text;
 
-
                 NpgsqlCommand cmd = new NpgsqlCommand();
                 cmd.CommandText = str1;
                 cmd.Connection = Form5.cn;
                 NpgsqlDataReader load_info = cmd.ExecuteReader();
-
                 resultsDataGrid.Rows.Clear();
-                //while (load_info.Read())
-                //{
-                //    resultsDataGrid.Rows.Add(load_info[0], load_info[1], load_info[2], load_info[3], load_info[4]);
-                //}
-                //load_info.Close();
+                
                 load_info.Read();
                 try
                 {

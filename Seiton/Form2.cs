@@ -21,13 +21,9 @@ namespace Seiton
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            
             aut_num_textBox.AutoCompleteCustomSource = CargarCods();
             aut_num_textBox.AutoCompleteMode = AutoCompleteMode.Suggest;
             aut_num_textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-
-
-
         }
         private AutoCompleteStringCollection CargarCods()
         {
@@ -45,12 +41,22 @@ namespace Seiton
             NpgsqlDataReader codOM = cmd_codOM.ExecuteReader();
             while (codOM.Read())
             {
-                codOrdenMov.Add(codOM[0].ToString());
-                //om_cie_comboBox.Items.Add(codOM[0].ToString());
+                codOrdenMov.Add(codOM[0].ToString());              
             }
             codOM.Close();
 
             return codOrdenMov;
+        }
+        private void aut_motivoComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (aut_motivoComboBox.SelectedIndex == 0)
+            {
+                aut_codMotivTbox.Text = "INSTITUC";
+            }
+            else
+            {
+                aut_codMotivTbox.Text = "MECANIC";
+            }
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -65,41 +71,27 @@ namespace Seiton
 
         private void aut_num_textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                 (e.KeyChar != (char)Keys.Back))
-            {
-                e.Handled = true;
-            }
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
+            { e.Handled = true; }
         }
-
         private void aut_kmSalida_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                 (e.KeyChar != (char)Keys.Back))
-            {
-                e.Handled = true;
-            }
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
+            { e.Handled = true; }
         }
-
         private void aut_kmEntrada_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                 (e.KeyChar != (char)Keys.Back))
-            {
-                e.Handled = true;
-            }
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
+            { e.Handled = true; }
         }
-
         private void aut_numVehiComboBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
         }
-
         private void aut_motivoComboBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
         }
-
         private void aut_num_textBox_TextChanged(object sender, EventArgs e)
         {
             aut_loadBtn.Enabled = true;
@@ -140,7 +132,6 @@ namespace Seiton
                 aut_kmSalida.Enabled = true;
                 aut_motivoComboBox.Enabled = true;
                 aut_guardarBtn.Enabled = true;
-
             }
             catch (Exception ex)
             {
@@ -168,29 +159,17 @@ namespace Seiton
 
         }
 
-        private void aut_motivoComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (aut_motivoComboBox.SelectedIndex == 0 )
-            {
-                aut_codMotivTbox.Text = "INSTITUC"; 
-            }
-            else
-            {
-                aut_codMotivTbox.Text = "MECANIC";
-            }
-        }
+        
 
         private void aut_guardarBtn_Click(object sender, EventArgs e)
         {
             if (aut_motivoComboBox.Text == "")
             {
-                MessageBox.Show("Elejir el motivo en la celda junto a la palabra 'Para'",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Elejir el motivo en la celda junto a la palabra 'Para'", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             if (aut_kmEntrada.Text == "" || aut_kmSalida.Text == "")
             {
-                MessageBox.Show("No dejar kilometrajes en blanco", 
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No dejar kilometrajes en blanco", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
@@ -204,7 +183,6 @@ namespace Seiton
                     try
                     {
                         String str1;
-
                         str1 = "insert into entrada_salida.autorizacion values ( ";
                         str1 = str1 +       aut_num_textBox.Text         + ", ";
                         str1 = str1 + "'" + aut_fecha.Text         + "'" + ", ";
@@ -217,15 +195,11 @@ namespace Seiton
                         str1 = str1 + "'" + aut_codMotivTbox.Text  + "'" + ", ";
                         str1 = str1 + "'" + aut_solicitante.Text   + "'" + ", ";
                         str1 = str1 + "'" + aut_Asunto.Text        + "'" + ");";
-
-
                         NpgsqlCommand cmd1 = new NpgsqlCommand();
                         cmd1.CommandText = str1;
                         cmd1.Connection = Form5.cn;
                         cmd1.ExecuteNonQuery();
-
-                        MessageBox.Show("Registro Insertado.",
-                                "Registro insertado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Registro Insertado.", "Registro insertado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.Close();
                     }
                     catch (Exception ex)

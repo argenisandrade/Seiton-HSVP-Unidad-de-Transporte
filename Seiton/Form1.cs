@@ -93,7 +93,23 @@ namespace Seiton
             om_cie_comboBox.AutoCompleteCustomSource = CargarCIE();
             om_cie_comboBox.AutoCompleteMode = AutoCompleteMode.Suggest;
             om_cie_comboBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+        }
+        private AutoCompleteStringCollection CargarCIE()
+        {
+            // Cargar combobox de Cie10 y generar autocompletador
+            AutoCompleteStringCollection datacie10 = new AutoCompleteStringCollection();
 
+            NpgsqlCommand cmd_cie10 = new NpgsqlCommand();
+            cmd_cie10.CommandText = "SELECT distinct code from entrada_salida.cie10 where code not like '%-%' order by code asc;";
+            cmd_cie10.Connection = Form5.cn;
+            NpgsqlDataReader cie10 = cmd_cie10.ExecuteReader();
+            while (cie10.Read())
+            {
+                datacie10.Add(cie10[0].ToString());
+                om_cie_comboBox.Items.Add(cie10[0].ToString());
+            }
+            cie10.Close();
+            return datacie10;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -132,24 +148,7 @@ namespace Seiton
             codVehi.Close();
         }
 
-        private AutoCompleteStringCollection CargarCIE()
-        {
-            // Cargar combobox de Cie10 y generar autocompletador
-            AutoCompleteStringCollection datacie10 = new AutoCompleteStringCollection();
-
-            NpgsqlCommand cmd_cie10 = new NpgsqlCommand();
-            cmd_cie10.CommandText = "SELECT distinct code from entrada_salida.cie10 where code not like '%-%' order by code asc;";
-            cmd_cie10.Connection = Form5.cn;
-            NpgsqlDataReader cie10 = cmd_cie10.ExecuteReader();
-            while (cie10.Read())
-            {
-                datacie10.Add(cie10[0].ToString());
-                om_cie_comboBox.Items.Add(cie10[0].ToString());
-            }
-            cie10.Close();
-
-            return datacie10;
-        }
+        
 
         private void est_vehiClassComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -158,74 +157,43 @@ namespace Seiton
 
         private void om_num_tbox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && 
-                 (e.KeyChar != (char)Keys.Back))
-            {
-                e.Handled = true;
-            }
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
+            { e.Handled = true; }
         }
-
         private void om_solicitantetextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!(char.IsLetter(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != ' '))
-            {
-                e.Handled = true;
-                return;
-            }
+            { e.Handled = true; return;  }
         }
-
         private void om_unidad_textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(!(char.IsLetter(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != ' '))
-            {
-                e.Handled = true;
-                return;
-            }
+            { e.Handled = true; return;  }
         }
-
         private void om_paciente_textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(!(char.IsLetter(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != ' '))
-            {
-                e.Handled = true;
-                return;
-            }
+            { e.Handled = true; return;  }
         }
-
         private void om_edad_textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                 (e.KeyChar != (char)Keys.Back))
-            {
-                e.Handled = true;
-            }
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
+            { e.Handled = true; }
         }
-
         private void om_ci_textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                 (e.KeyChar != (char)Keys.Back))
-            {
-                e.Handled = true;
-            }
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
+            { e.Handled = true; }
         }
-
         private void textBox15_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!(char.IsLetter(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != ' '))
-            {
-                e.Handled = true;
-                return;
-            }
+            { e.Handled = true; return; }
         }
-
         private void est_obsTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!(char.IsLetter(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != ' '))
-            {
-                e.Handled = true;
-                return;
-            }
+            { e.Handled = true; return; }
         }
 
         private void est_solicitudComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -386,36 +354,23 @@ namespace Seiton
                             str2 = str2 + est_codVehiTextBox.Text + ", ";
                             str2 = str2 + "'" + est_cedConductorTextBox.Text + "'" + ", ";
 
-                            if (est_ParamTextBox.Text == "")
-                            {
-                                str2 = str2 + "null" + ", ";
-                            }
-                            else
-                            {
-                                str2 = str2 + "'" + est_ParamTextBox.Text + "'" + ", ";
-                            }
-                            if (est_obsTextBox.Text == "")
-                            {
-                                str2 = str2 + "null" + ", ";
-                            }
-                            else
-                            {
-                                str2 = str2 + "'" + est_obsTextBox.Text + "'" + ", ";
-                            }
+                            if (est_ParamTextBox.Text == ""){str2 = str2 + "null" + ", ";}
+                            else {str2 = str2 + "'" + est_ParamTextBox.Text + "'" + ", ";}
+                            if (est_obsTextBox.Text == "") {str2 = str2 + "null" + ", ";}
+                            else{str2 = str2 + "'" + est_obsTextBox.Text + "'" + ", ";}
 
                             str2 = str2 + "'" + est_datePicker.Text + "'" + ");";
+
                             try
                             {
                                 NpgsqlCommand cmd1 = new NpgsqlCommand();
                                 cmd1.CommandText = str1;
                                 cmd1.Connection = Form5.cn;
                                 cmd1.ExecuteNonQuery();
-
                                 NpgsqlCommand cmd2 = new NpgsqlCommand();
                                 cmd2.CommandText = str2;
                                 cmd2.Connection = Form5.cn;
                                 cmd2.ExecuteNonQuery();
-
                                 MessageBox.Show("Registro Insertado.",
                                 "Registro insertado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 this.Close();
@@ -483,7 +438,6 @@ namespace Seiton
             om_codNacTextBox.Text = codNac[0].ToString();
             codNac.Close();
         }
-
         private void om_ci_textBox_TextChanged(object sender, EventArgs e)
         {
             if (om_ci_textBox.Text.Length == 10)

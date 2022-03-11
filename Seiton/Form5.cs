@@ -14,9 +14,7 @@ namespace Seiton
 {
     public partial class Form5 : Form
     {
-        public static NpgsqlConnection cn = new NpgsqlConnection();
-        
-
+        public static NpgsqlConnection cn = new NpgsqlConnection();      
         public Form5()
         {
             InitializeComponent();
@@ -29,7 +27,6 @@ namespace Seiton
             cn.ConnectionString = str;
             cn.Open();
         }
-
         private void main_insertBtn_Click(object sender, EventArgs e)
         {
             bool Isopen = false;
@@ -47,8 +44,7 @@ namespace Seiton
                 Form1 frm = new Form1();
                 //frm.MdiParent = this;
                 frm.Show();
-            }
-            
+            }            
         }
 
         private void main_informBtn_Click(object sender, EventArgs e)
@@ -66,12 +62,9 @@ namespace Seiton
             if (Isopen == false)
             {
                 Form4 frm = new Form4();
-                //frm.MdiParent = this;
                 frm.Show();
-            }
-            
+            }            
         }
-
         private void main_autBtn_Click(object sender, EventArgs e)
         {
             bool Isopen = false;
@@ -87,7 +80,6 @@ namespace Seiton
             if (Isopen == false)
             {
                 Form2 frm = new Form2();
-                //frm.MdiParent = this;
                 frm.Show();
             }
         }
