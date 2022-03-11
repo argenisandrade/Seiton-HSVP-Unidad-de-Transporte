@@ -1,0 +1,31 @@
+select * from entrada_salida.orden_mov O natural join entrada_salida.info_solicitud I inner join entrada_salida.vehiculo V on I.vehiculo = V.cod_inst where O.num = 123456
+
+select * from entrada_salida.vehiculo
+select * from entrada_salida.info_solicitud
+select * from entrada_salida.autorizacion
+SELECT num from entrada_salida.info_solicitud where estado = 'APROBADA' order by num asc;
+
+SELECT num FROM entrada_salida.info_solicitud I
+WHERE estado = 'APROBADA' and NOT EXISTS (
+   SELECT FROM   entrada_salida.autorizacion
+   WHERE  num = I.num ) order by num asc;
+
+select * from entrada_salida.orden_mov O natural join
+     entrada_salida.info_solicitud I inner join
+     entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join
+     entrada_salida.conductor C on I.conductor = C.cedula 
+     where O.num = 123456 and I.estado = 'APROBADA' and NOT EXISTS( 
+            SELECT FROM   entrada_salida.autorizacion
+            WHERE  num = I.num) order by I.num asc; 
+
+select O.num, O.fecha, O.solicitante, C.nombre as conductor, V.num
+from entrada_salida.orden_mov O natural join
+     entrada_salida.info_solicitud I inner join
+     entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join
+     entrada_salida.conductor C on I.conductor = C.cedula 
+     where O.num = 1000 and I.estado = 'APROBADA'
+	 
+select * from entrada_salida.orden_mov natural join
+     entrada_salida.info_solicitud
+	 
+SELECT * FROM entrada_salida.vehiculo
