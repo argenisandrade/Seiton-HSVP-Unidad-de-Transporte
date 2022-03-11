@@ -42,6 +42,10 @@ create table entrada_salida.cie10(
 	source varchar
 )
 
+----------------------------------------------------------------
+---- insertar datos e tabla cie10 ejecutando el archivo cie10.py
+----------------------------------------------------------------
+
 CREATE TYPE tip_licen AS
 ENUM ('A', 'A1', 'B', 'C', 'C1', 'D', 'D1', 'E', 'E1', 'F', 'G');
 create table entrada_salida.conductor(
