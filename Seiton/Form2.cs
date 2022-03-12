@@ -101,8 +101,8 @@ namespace Seiton
         {
             string str1;
 
-            str1 = "select * from entrada_salida.orden_mov O natural join ";
-            str1 = str1 + "entrada_salida.info_solicitud I inner join ";
+            str1 = "select * from entrada_salida.orden_mov O inner join ";
+            str1 = str1 + "entrada_salida.info_solicitud I on O.num = I.num inner join ";
             str1 = str1 + "entrada_salida.vehiculo V on I.vehiculo = V.cod_inst inner join ";
             str1 = str1 + "entrada_salida.conductor C on I.conductor = C.cedula ";
             str1 = str1 + "where O.num = " + aut_num_textBox.Text;
@@ -120,10 +120,10 @@ namespace Seiton
             {
                 aut_HsalidaTbox.Text = load_info[12].ToString();
                 aut_HentradaTbox.Text = load_info[16].ToString();
-                aut_codVehiTbox.Text = load_info[23].ToString();
-                aut_numVehiTBox.Text = load_info[25].ToString();
-                aut_codConducTbox.Text = load_info[36].ToString();
-                aut_nomCondTbox.Text = load_info[37].ToString();
+                aut_codVehiTbox.Text = load_info[20].ToString();
+                aut_numVehiTBox.Text = load_info[27].ToString();
+                aut_codConducTbox.Text = load_info[21].ToString();
+                aut_nomCondTbox.Text = load_info[39].ToString();
                 aut_fecha.Text = load_info[1].ToString();
                 aut_solicitante.Text = load_info[2].ToString();
                 aut_Asunto.Text = load_info[4].ToString();

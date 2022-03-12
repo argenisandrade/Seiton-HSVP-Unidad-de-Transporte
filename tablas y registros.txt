@@ -102,6 +102,10 @@ insert into entrada_salida.destino values
 (default, 'HOSPITAL SAN LUIS DE OTAVALO',  'MSP',   'OTAVALO',  51),
 (default,     'CENTRO DE SALUD CARANQUI',  'MSP',    'IBARRA',  10);
 
+--------------------------------------------------------------
+--- crear e instertar aquí primero datos de tabla nacionalidad
+--------------------------------------------------------------
+
 create table entrada_salida.orden_mov(
 	num int primary key,
 	fecha date not null,
